@@ -8,6 +8,8 @@ defmodule Mix.Tasks.Cham.Init do
 
     # create makefile and docker files
     write_makefile(otp_app)
+    write_dockerfile(otp_app)
+    write_docker_compose(otp_app)
 
     _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect
     _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect
@@ -15,6 +17,77 @@ defmodule Mix.Tasks.Cham.Init do
     # or bail if it is)
     #
     # add a scope for "/" that adds an index public page setup
+
+  end
+
+  def write_dockerfile(otp_app) do
+    app_name = to_string(otp_app)
+    app_dir = File.cwd!
+    dockerfile_path = Path.join([app_dir, "Dockerfile"])
+
+    File.write(
+      dockerfile_path,
+      """
+      # Elixir + Phoenix
+
+      FROM elixir:1.14-alpine
+
+      # Install debian packages
+      RUN apt-get update
+      RUN apt-get install --yes build-essential inotify-tools postgresql-client
+
+      # Install Phoenix packages
+      RUN mix local.hex --force
+      RUN mix local.rebar --force
+
+      WORKDIR /app
+      EXPOSE 4000
+      """,
+      [:write]
+    )
+
+  end
+
+  def write_docker_compose(otp_app) do
+    app_name = to_string(otp_app)
+    app_dir = File.cwd!
+    docker_compose_path = Path.join([app_dir, "docker-compose.yml"])
+
+    File.write(
+      docker_compose_path,
+      """
+      version: '3.2'
+      services:
+        db:
+          image: postgres
+          ports:
+            - "5432:5432"
+          environment:
+            - POSTGRES_PASSWORD=postgres
+
+        web:
+          build: .
+          volumes:
+            - type: bind
+              source: .
+              target: /app
+          ports:
+            - "4000:4000"
+          environment:
+            # Modify your config files (dev.exs and test.exs) so that the password and hostname can be overridden
+            # when environment variables are set:
+            # password: System.get_env("DB_PASS", "postgres"),
+            # hostname: System.get_env("DB_HOST", "localhost"),
+            - PGPASSWORD=postgres
+            - DB_PASS=postgres
+            - DB_HOST=db
+          depends_on:
+            - db
+          command:
+            - ./run.sh
+      """,
+      [:write]
+    )
 
   end
 
