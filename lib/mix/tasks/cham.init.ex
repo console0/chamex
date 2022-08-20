@@ -10,6 +10,7 @@ defmodule Mix.Tasks.Cham.Init do
     write_makefile(otp_app)
     write_dockerfile(otp_app)
     write_docker_compose(otp_app)
+    write_docker_script(otp_app)
 
     _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect
     _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect
@@ -21,7 +22,6 @@ defmodule Mix.Tasks.Cham.Init do
   end
 
   def write_dockerfile(otp_app) do
-    app_name = to_string(otp_app)
     app_dir = File.cwd!
     dockerfile_path = Path.join([app_dir, "Dockerfile"])
 
@@ -32,9 +32,8 @@ defmodule Mix.Tasks.Cham.Init do
 
       FROM elixir:1.14-alpine
 
-      # Install debian packages
-      RUN apt-get update
-      RUN apt-get install --yes build-essential inotify-tools postgresql-client
+      # Install packages
+      RUN apk add --no-cache git openssl-dev build-base
 
       # Install Phoenix packages
       RUN mix local.hex --force
@@ -45,11 +44,69 @@ defmodule Mix.Tasks.Cham.Init do
       """,
       [:write]
     )
+  end
 
+  def write_docker_script(otp_app) do
+    app_dir = File.cwd!
+    dockerfile_path = Path.join([app_dir, "run.sh"])
+
+    File.write(
+      dockerfile_path,
+      """
+      #!/bin/sh
+      # Adapted from Alex Kleissner's post, Running a Phoenix 1.3 project with docker-compose
+      # https://medium.com/@hex337/running-a-phoenix-1-3-project-with-docker-compose-d82ab55e43cf
+
+      set -e
+
+      # Ensure the app's dependencies are installed
+      mix deps.get
+
+      # Prepare Dialyzer if the project has Dialyxer set up
+      if mix help dialyzer >/dev/null 2>&1
+      then
+        echo "\\nFound Dialyxer: Setting up PLT..."
+        mix do deps.compile, dialyzer --plt
+      else
+        echo "\\nNo Dialyxer config: Skipping setup..."
+      fi
+
+      # Wait for Postgres to become available.
+      until psql -h db -U "postgres" -c '\\q'; do
+        >&2 echo "Postgres is unavailable - sleeping"
+        sleep 1
+      done
+
+      echo "\\nPostgres is available: continuing with database setup..."
+
+      #Analysis style code
+      # Prepare Credo if the project has Credo start code analyze
+      if mix help credo >/dev/null 2>&1
+      then
+        echo "\\nFound Credo: analyzing..."
+        mix credo || true
+      else
+        echo "\\nNo Credo config: Skipping code analyze..."
+      fi
+
+      # Potentially Set up the database
+      mix ecto.create
+      mix ecto.migrate
+
+      echo "\\nTesting the installation..."
+      # "Prove" that install was successful by running the tests
+      # mix test
+
+      echo "\\n Launching Phoenix web server..."
+      # Start the phoenix web server
+      mix phx.server
+
+      """,
+      [:write]
+    )
   end
 
   def write_docker_compose(otp_app) do
-    app_name = to_string(otp_app)
     app_dir = File.cwd!
     docker_compose_path = Path.join([app_dir, "docker-compose.yml"])
 
@@ -88,7 +145,6 @@ defmodule Mix.Tasks.Cham.Init do
       """,
       [:write]
     )
-
   end
 
   def write_makefile(otp_app) do
@@ -176,7 +232,6 @@ defmodule Mix.Tasks.Cham.Init do
       """,
       [:write]
     )
-
   end
 
 end
