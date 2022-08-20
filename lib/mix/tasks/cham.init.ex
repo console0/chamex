@@ -20,7 +20,7 @@ defmodule Mix.Tasks.Cham.Init do
     # add a scope for "/" that adds an index public page setup
   end
 
-  def write_dockerfile(otp_app) do
+  def write_dockerfile(_otp_app) do
     app_dir = File.cwd!()
     dockerfile_path = Path.join([app_dir, "Dockerfile"])
 
@@ -45,7 +45,7 @@ defmodule Mix.Tasks.Cham.Init do
     )
   end
 
-  def write_docker_script(otp_app) do
+  def write_docker_script(_otp_app) do
     app_dir = File.cwd!()
     docker_script_path = Path.join([app_dir, "run.sh"])
 
@@ -107,7 +107,7 @@ defmodule Mix.Tasks.Cham.Init do
     File.chmod!(docker_script_path, 755)
   end
 
-  def write_docker_compose(otp_app) do
+  def write_docker_compose(_otp_app) do
     app_dir = File.cwd!()
     docker_compose_path = Path.join([app_dir, "docker-compose.yml"])
 
