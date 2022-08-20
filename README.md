@@ -1,6 +1,6 @@
 # Chamex
 
-Proof of concept for an opinionated phoenix dev environemnt and layout that
+Proof of concept for an opinionated phoenix dev environment and layout that
 will make the transition from c5 to phoenix easier for developers.
 
 ## Prerequisites
@@ -12,7 +12,7 @@ to `~.puma-dev/ex`
 4000
 ```
 
-Make sure you also have some dort of docer runnning, be it docker desktop or 
+Make sure you also have some dort of docker environment running, be it docker desktop or 
 rancher desktop.  I've been using rancher desktop during development of this env.
 
 ## Initialization and Installation 
