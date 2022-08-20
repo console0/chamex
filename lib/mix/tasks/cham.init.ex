@@ -32,74 +32,74 @@ defmodule Mix.Tasks.Cham.Init do
       dbname := #{app_name}
 
       help: ## Shows this help.
-        @IFS=$$'\\n' ; \\
-        help_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//'`); \\
-        for help_line in $${help_lines[@]}; do \\
-          IFS=$$'#' ; \\
-          help_split=($$help_line) ; \\
-          help_command=`echo $${help_split[0]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \\
-          help_info=`echo $${help_split[2]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \\
-          printf "%-30s %s\\n" $$help_command $$help_info ; \\
-        done
+      \t@IFS=$$'\\n' ; \\
+      \thelp_lines=(`fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//'`); \\
+      \tfor help_line in $${help_lines[@]}; do \\
+      \t\tIFS=$$'#' ; \\
+      \t\thelp_split=($$help_line) ; \\
+      \t\thelp_command=`echo $${help_split[0]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \\
+      \t\thelp_info=`echo $${help_split[2]} | sed -e 's/^ *//' -e 's/ *$$//'` ; \\
+      \t\tprintf "%-30s %s\\n" $$help_command $$help_info ; \\
+      \tdone
 
       build: ## (Re)build the containers
-        docker-compose build
+      \tdocker-compose build
 
       start-db: ## Start the postgres node
-        docker-compose up -d db
+      \tdocker-compose up -d db
 
       stop-db: ## Stop the postgres node
-        docker-compose stop
+      \tdocker-compose stop
 
       db-migrate: ## Run migrations
-        docker-compose up -d db
-        docker-compose run --rm web mix do ecto.create ecto.migrate
+      \tdocker-compose up -d db
+      \tdocker-compose run --rm web mix do ecto.create ecto.migrate
 
       db-backup: ## Dump the db
-        docker-compose up -d db
-        pg_dump $(dbname) -h localhost -U postgres -w -O -f $(dbname).sql
+      \tdocker-compose up -d db
+      \tpg_dump $(dbname) -h localhost -U postgres -w -O -f $(dbname).sql
 
       db-restore: ## Restore the db
-        docker-compose up -d db
-        createdb -T template0 -h localhost -U postgres $(dbname)
-        psql $(dbname) -h localhost -U postgres < $(dbname).sql
+      \tdocker-compose up -d db
+      \tcreatedb -T template0 -h localhost -U postgres $(dbname)
+      \tpsql $(dbname) -h localhost -U postgres < $(dbname).sql
 
       web-server: ## Start the phoenix web server
-        docker-compose run --rm --service-ports web mix deps.get
-        docker-compose run --rm --service-ports web
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix deps.get
+      \tdocker-compose run --rm --service-ports web
+      \tdocker-compose stop
 
       web-server-iex: ## Start the phoenix web server
-        docker-compose run --rm --service-ports web iex -S mix phx.server
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web iex -S mix phx.server
+      \tdocker-compose stop
 
       web-shell: ## Start a shell session on the web server
-        docker-compose run --rm --service-ports web sh
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web sh
+      \tdocker-compose stop
 
       test: test-mix
 
       clean: ## mix clean
-        docker-compose run --rm --service-ports web mix clean
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix clean
+      \tdocker-compose stop
 
       superclean: ## Clean plus remove all compiled stuff
-        docker-compose run --rm --service-ports web mix clean
-        rm -rf _build/*
-        rm -rf deps/*
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix clean
+      \trm -rf _build/*
+      \trm -rf deps/*
+      \tdocker-compose stop
 
       test-mix: ## Run mix tests
-        docker-compose run --rm --service-ports web mix test
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix test
+      \tdocker-compose stop
 
       test-coverage: ## Run test coverage report
-        docker-compose run --rm --service-ports web mix test --cover
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix test --cover
+      \tdocker-compose stop
 
       format: ## Run code formatter
-        docker-compose run --rm --service-ports web mix format
-        docker-compose stop
+      \tdocker-compose run --rm --service-ports web mix format
+      \tdocker-compose stop
       """,
       [:write]
     )
