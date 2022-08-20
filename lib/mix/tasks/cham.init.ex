@@ -4,7 +4,7 @@ defmodule Mix.Tasks.Cham.Init do
 
   @shortdoc "Setup the folder structure and make an initial public class."
   def run(_args) do
-    otp_app = Mix.Cham.otp_app() |> IO.inspect
+    otp_app = Mix.Cham.otp_app() |> IO.inspect()
 
     # create makefile and docker files
     write_makefile(otp_app)
@@ -12,17 +12,16 @@ defmodule Mix.Tasks.Cham.Init do
     write_docker_compose(otp_app)
     write_docker_script(otp_app)
 
-    _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect
-    _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect
+    _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect()
+    _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect()
     # add a browser pipeline (may need to not call it that in case its there,
     # or bail if it is)
     #
     # add a scope for "/" that adds an index public page setup
-
   end
 
   def write_dockerfile(otp_app) do
-    app_dir = File.cwd!
+    app_dir = File.cwd!()
     dockerfile_path = Path.join([app_dir, "Dockerfile"])
 
     File.write(
@@ -47,11 +46,11 @@ defmodule Mix.Tasks.Cham.Init do
   end
 
   def write_docker_script(otp_app) do
-    app_dir = File.cwd!
-    dockerfile_path = Path.join([app_dir, "run.sh"])
+    app_dir = File.cwd!()
+    docker_script_path = Path.join([app_dir, "run.sh"])
 
     File.write(
-      dockerfile_path,
+      docker_script_path,
       """
       #!/bin/sh
       # Adapted from Alex Kleissner's post, Running a Phoenix 1.3 project with docker-compose
@@ -104,10 +103,12 @@ defmodule Mix.Tasks.Cham.Init do
       """,
       [:write]
     )
+
+    File.chmod!(docker_script_path, 755)
   end
 
   def write_docker_compose(otp_app) do
-    app_dir = File.cwd!
+    app_dir = File.cwd!()
     docker_compose_path = Path.join([app_dir, "docker-compose.yml"])
 
     File.write(
@@ -149,7 +150,7 @@ defmodule Mix.Tasks.Cham.Init do
 
   def write_makefile(otp_app) do
     app_name = to_string(otp_app)
-    app_dir = File.cwd!
+    app_dir = File.cwd!()
     makefile_path = Path.join([app_dir, "Makefile"])
 
     File.write(
@@ -233,5 +234,4 @@ defmodule Mix.Tasks.Cham.Init do
       [:write]
     )
   end
-
 end
