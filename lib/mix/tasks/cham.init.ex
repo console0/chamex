@@ -64,10 +64,10 @@ defmodule Mix.Tasks.Cham.Init do
       # Prepare Dialyzer if the project has Dialyxer set up
       if mix help dialyzer >/dev/null 2>&1
       then
-        echo "\\nFound Dialyxer: Setting up PLT..."
+        echo "Found Dialyxer: Setting up PLT..."
         mix do deps.compile, dialyzer --plt
       else
-        echo "\\nNo Dialyxer config: Skipping setup..."
+        echo "No Dialyxer config: Skipping setup..."
       fi
 
       # Wait for Postgres to become available.
@@ -76,27 +76,23 @@ defmodule Mix.Tasks.Cham.Init do
         sleep 1
       done
 
-      echo "\\nPostgres is available: continuing with database setup..."
+      echo "Postgres is available: continuing with database setup..."
 
       #Analysis style code
       # Prepare Credo if the project has Credo start code analyze
       if mix help credo >/dev/null 2>&1
       then
-        echo "\\nFound Credo: analyzing..."
+        echo "Found Credo: analyzing..."
         mix credo || true
       else
-        echo "\\nNo Credo config: Skipping code analyze..."
+        echo "No Credo config: Skipping code analyze..."
       fi
 
       # Potentially Set up the database
       mix ecto.create
       mix ecto.migrate
 
-      echo "\\nTesting the installation..."
-      # "Prove" that install was successful by running the tests
-      # mix test
-
-      echo "\\n Launching Phoenix web server..."
+      echo "Launching Phoenix web server..."
       # Start the phoenix web server
       mix phx.server
 
