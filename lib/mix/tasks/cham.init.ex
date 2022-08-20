@@ -104,7 +104,7 @@ defmodule Mix.Tasks.Cham.Init do
       [:write]
     )
 
-    File.chmod!(docker_script_path, 755)
+    File.chmod!(docker_script_path, 0o755)
   end
 
   def write_docker_compose(_otp_app) do
