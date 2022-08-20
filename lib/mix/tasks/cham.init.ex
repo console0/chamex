@@ -32,7 +32,7 @@ defmodule Mix.Tasks.Cham.Init do
       FROM elixir:1.14-alpine
 
       # Install packages
-      RUN apk add --no-cache git openssl-dev build-base
+      RUN apk add --no-cache git openssl-dev build-base postgresql-client
 
       # Install Phoenix packages
       RUN mix local.hex --force
