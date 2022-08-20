@@ -12,7 +12,7 @@ to `~.puma-dev/ex`
 4000
 ```
 
-Make sure you also have some dort of docker environment running, be it docker desktop or 
+Make sure you also have some sort of docker environment running, be it docker desktop or 
 rancher desktop.  I've been using rancher desktop during development of this env.
 
 ## Initialization and Installation 
