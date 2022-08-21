@@ -30,6 +30,7 @@ defmodule Mix.Tasks.Cham.Classinit do
       write_readme(class_name, class_path)
       write_router(class_name, class_path)
       write_root_template(class_name, template_path)
+      write_index(class_name)
     end
   end
 
