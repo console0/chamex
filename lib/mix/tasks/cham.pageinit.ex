@@ -27,7 +27,7 @@ defmodule Mix.Tasks.Cham.Pageinit do
 
   def create_page(class_name, page_name) do
     otp_app = Mix.Cham.otp_app()
-    code_path = Mix.Cham.web_path(otp_app, "controllers/" <> class_name <> "/" <> page_name)
+    code_path = Mix.Cham.web_path(otp_app, "controllers/" <> class_name <> "/" <> page_name <> ".ex")
 
     template_path =
       Mix.Cham.web_path(otp_app, "templates/" <> class_name <> "/" <> page_name <> ".html.eex")
