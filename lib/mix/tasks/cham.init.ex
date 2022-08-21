@@ -22,6 +22,35 @@ defmodule Mix.Tasks.Cham.Init do
     class_path = Mix.Cham.web_path(otp_app, "controllers/public")
     template_path = Mix.Cham.web_path(otp_app, "templates/public")
 
+    # TODO readme for templates root dir
+
+    # TODO updates for a single view control
+
+    # TODO see if a plug can do put_view
+
+    # Add RequireClass to current code and make sure it can be used.
+    # or dump
+    """
+    defmodule YOU.Plugs.ChamexClass do
+      import Plug.Conn
+
+      use ChameleonicWeb, :controller
+
+      def init(classes), do: classes
+
+      def call(conn, classes) do
+        session_class = get_session(conn, :class)
+
+        case Enum.member?(classes, session_class) do
+          true -> conn |> put_view(THEVIEWCLASS)
+          _ -> conn |> put_flash(:info, "You must be logged in") |> redirect(to: "/") |> halt()
+        end
+      end
+    end
+    """
+    # update the routers to have the above
+    # TODO nuke the junk that comes with the site so we can override
+
     with :ok <- File.mkdir_p(Path.dirname(class_path)),
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
       # write contents
