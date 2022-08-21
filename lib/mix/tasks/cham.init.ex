@@ -4,7 +4,7 @@ defmodule Mix.Tasks.Cham.Init do
 
   @shortdoc "Setup the folder structure and make an initial public class."
   def run(_args) do
-    otp_app = Mix.Cham.otp_app() |> IO.inspect()
+    otp_app = Mix.Cham.otp_app()
 
     # create makefile and docker files
     write_makefile(otp_app)
@@ -12,10 +12,8 @@ defmodule Mix.Tasks.Cham.Init do
     write_docker_compose(otp_app)
     write_docker_script(otp_app)
 
-    Mix.Cham.web_name(otp_app) |> IO.inspect
-
     # router and default classes
-    # write_router(otp_app)
+    write_router(otp_app)
 
     _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect()
     _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect()
