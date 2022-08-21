@@ -20,14 +20,13 @@ defmodule Mix.Tasks.Cham.Classinit do
     class_name = Mix.Cham.to_lower_char(raw_class_name)
     IO.puts("OK like generate " <> class_name)
     # gen folder web/controllers/class
-    class_path = Mix.Cham.web_path(otp_app, ["controllers",class_name])
+    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers",class_name]))
     template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", class_name]))
 
-    IO.puts(Path.dirname(class_path))
-    IO.puts(Path.dirname(Path.join([class_path,"cControllers",class_name])))
+    IO.puts(class_path)
 
-    with :ok <- File.mkdir_p(Path.dirname(class_path)),
-         :ok <- File.mkdir_p(Path.dirname(template_path)) do
+    with :ok <- File.mkdir_p(class_path),
+         :ok <- File.mkdir_p(template_path) do
       IO.puts("Folders created")
       # write contents
       write_readme(class_name, class_path)
