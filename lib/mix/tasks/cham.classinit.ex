@@ -18,7 +18,7 @@ defmodule Mix.Tasks.Cham.Classinit do
   def generate_class(raw_class_name) do
     otp_app = Mix.Cham.otp_app()
     class_name = Mix.Cham.to_lower_char(raw_class_name)
-
+    IO.puts("OK like generate " <> class_name)
     # gen folder web/controllers/class
     class_path = Mix.Cham.web_path(otp_app, "controllers/" <> class_name)
     template_path = Mix.Cham.web_path(otp_app, "templates/" <> class_name)
