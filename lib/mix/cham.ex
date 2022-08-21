@@ -17,6 +17,8 @@ defmodule Mix.Cham do
   def web_path(ctx_app, rel_path \\ "") when is_atom(ctx_app) do
     this_app = otp_app()
 
+    IO.inspect(rel_path)
+
     if ctx_app == this_app do
       Path.join(["lib", "#{this_app}_web", rel_path])
     else
