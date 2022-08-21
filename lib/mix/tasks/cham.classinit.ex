@@ -24,6 +24,7 @@ defmodule Mix.Tasks.Cham.Classinit do
     template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", class_name]))
 
     IO.puts(Path.dirname(class_path))
+    IO.puts(Path.dirname(Path.join([class_path,"cControllers",class_name])))
 
     with :ok <- File.mkdir_p(Path.dirname(class_path)),
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
