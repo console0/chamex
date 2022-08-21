@@ -12,12 +12,92 @@ defmodule Mix.Tasks.Cham.Init do
     write_docker_compose(otp_app)
     write_docker_script(otp_app)
 
+    Mix.Cham.web_name(otp_app) |> IO.inspect
+
+    # router and default classes
+    # write_router(otp_app)
+
     _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect()
     _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect()
     # add a browser pipeline (may need to not call it that in case its there,
     # or bail if it is)
     #
     # add a scope for "/" that adds an index public page setup
+  end
+
+  def write_router(otp_app) do
+    app_dir = File.cwd!()
+    router_path = Mix.Cham.web_path(otp_app, "router.ex")
+
+    File.write(
+      router_path,
+      """
+      defmodule ChameleonicWeb.Router do
+        use ChameleonicWeb, :router
+
+        pipeline :browser do
+          plug :accepts, ["html"]
+          plug :fetch_session
+          plug :fetch_live_flash
+          plug :put_root_layout, {ChameleonicWeb.LayoutView, :root}
+          plug :protect_from_forgery
+          plug :put_secure_browser_headers
+        end
+
+        pipeline :api do
+          plug :accepts, ["json"]
+        end
+
+        scope "/", ChameleonicWeb do
+          pipe_through :browser
+
+          # actual public routes, using the public controller
+          get "/", PublicController, :index
+          get "/login", PublicController, :fakelogin
+          get "/logout", PublicController, :logout
+
+          # Send the classes to their own routes, so we can just hite the /prefixes/
+          forward "/employee", ParticipantRouter
+          forward "/admin", AdminRouter
+        end
+
+        # Other scopes may use custom stacks.
+        # scope "/api", ChameleonicWeb do
+        #   pipe_through :api
+        # end
+
+        # Enables LiveDashboard only for development
+        #
+        # If you want to use the LiveDashboard in production, you should put
+        # it behind authentication and allow only admins to access it.
+        # If your application does not have an admins-only section yet,
+        # you can use Plug.BasicAuth to set up some basic authentication
+        # as long as you are also using SSL (which you should anyway).
+        if Mix.env() in [:dev, :test] do
+          import Phoenix.LiveDashboard.Router
+
+          scope "/" do
+            pipe_through :browser
+
+            live_dashboard "/dashboard", metrics: ChameleonicWeb.Telemetry
+          end
+        end
+
+        # Enables the Swoosh mailbox preview in development.
+        #
+        # Note that preview only shows emails that were sent by the same
+        # node running the Phoenix server.
+        if Mix.env() == :dev do
+          scope "/dev" do
+            pipe_through :browser
+
+            forward "/mailbox", Plug.Swoosh.MailboxPreview
+          end
+        end
+      end
+      """,
+      [:write]
+    )
   end
 
   def write_dockerfile(_otp_app) do
