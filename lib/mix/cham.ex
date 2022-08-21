@@ -29,12 +29,7 @@ defmodule Mix.Cham do
   """
   def web_name(ctx_app) when is_atom(ctx_app) do
     this_app = otp_app()
-
-    if ctx_app == this_app do
-      camelize(this_app) <> "Web"
-    else
-      camelize(to_string(this_app)) <> "Web"
-    end
+    camelize(to_string(this_app)) <> "Web"
   end
 
   @doc """
