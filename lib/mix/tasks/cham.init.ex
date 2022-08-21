@@ -2,7 +2,7 @@ defmodule Mix.Tasks.Cham.Init do
   @moduledoc "The hello mix task: `mix help hello`"
   use Mix.Task
 
-  @shortdoc "Setup the folder structure and make an initial public class."
+  @shortdoc "Setup the folder structure and make an initial public/admin class."
   def run(_args) do
     otp_app = Mix.Cham.otp_app()
 
@@ -15,12 +15,50 @@ defmodule Mix.Tasks.Cham.Init do
     # router and default classes
     write_router(otp_app)
 
-    _router_path = Mix.Cham.web_path(otp_app, "router.ex") |> IO.inspect()
-    _public_class = Mix.Cham.web_path(otp_app, "controllers/public") |> IO.inspect()
-    # add a browser pipeline (may need to not call it that in case its there,
-    # or bail if it is)
-    #
-    # add a scope for "/" that adds an index public page setup
+    # create an admin class
+    Mix.Tasks.Cham.Classinit.generate_class("admin")
+
+    # create public structure and initial page
+    class_path = Mix.Cham.web_path(otp_app, "controllers/public")
+    template_path = Mix.Cham.web_path(otp_app, "templates/public")
+
+    with :ok <- File.mkdir_p(Path.dirname(class_path)),
+         :ok <- File.mkdir_p(Path.dirname(template_path)) do
+      # write contents
+      write_readme(class_path)
+      Mix.Tasks.Cham.Classinit.write_root_template("public", template_path)
+      # TODO gen auth should be handled correctly, we don't want to do that ourselves
+      # gen index page here!
+    end
+  end
+
+  def write_readme(class_path) do
+    class_name = "public"
+    readme_path = Path.join(class_path, "README.md")
+    this_app = Mix.Cham.otp_app()
+    app_name = to_string(this_app) <> "_web"
+
+    File.write(
+      readme_path,
+      """
+      ### Class: `#{class_name}`
+
+      All non-authenticated requests come to this class.
+
+      Routes are defined in `lib/#{app_name}/router.ex`
+
+      Pages should be added by calling `mix cham.pageinit --class #{class_name} pagename`
+
+      Templates for the pages in this class are located in:
+
+      `lib/#{app_name}/templates/#{class_name}`
+
+      The outer shell layout is defined in:
+
+      `lib/#{app_name}/templates/layout/#{class_name}.html.heex`
+      """,
+      [:write]
+    )
   end
 
   def write_router(otp_app) do

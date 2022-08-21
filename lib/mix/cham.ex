@@ -35,20 +35,21 @@ defmodule Mix.Cham do
   @doc """
   Taken from Phoenix for naming
   """
-  @spec camelize(String.t) :: String.t
+  @spec camelize(String.t()) :: String.t()
   def camelize(value), do: Macro.camelize(value)
 
-  @spec camelize(String.t, :lower) :: String.t
+  @spec camelize(String.t(), :lower) :: String.t()
   def camelize("", :lower), do: ""
-  def camelize(<<?_, t :: binary>>, :lower) do
+
+  def camelize(<<?_, t::binary>>, :lower) do
     camelize(t, :lower)
   end
-  def camelize(<<h, _t :: binary>> = value, :lower) do
-    <<_first, rest :: binary>> = camelize(value)
+
+  def camelize(<<h, _t::binary>> = value, :lower) do
+    <<_first, rest::binary>> = camelize(value)
     <<to_lower_char(h)>> <> rest
   end
 
-  defp to_lower_char(char) when char in ?A..?Z, do: char + 32
-  defp to_lower_char(char), do: char
-
+  def to_lower_char(char) when char in ?A..?Z, do: char + 32
+  def to_lower_char(char), do: char
 end
