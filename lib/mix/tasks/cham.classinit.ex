@@ -23,6 +23,8 @@ defmodule Mix.Tasks.Cham.Classinit do
     class_path = Mix.Cham.web_path(otp_app, "controllers/" <> class_name)
     template_path = Mix.Cham.web_path(otp_app, "templates/" <> class_name)
 
+    IO.puts(Path.dirname(class_path))
+
     with :ok <- File.mkdir_p(Path.dirname(class_path)),
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
       IO.puts("Folders created")
