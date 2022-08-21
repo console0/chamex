@@ -21,7 +21,7 @@ defmodule Mix.Tasks.Cham.Classinit do
 
     # gen folder web/controllers/class
     class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers",class_name]))
-    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", class_name]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
 
     with :ok <- File.mkdir_p(class_path),
          :ok <- File.mkdir_p(template_path) do
@@ -99,7 +99,7 @@ defmodule Mix.Tasks.Cham.Classinit do
   end
 
   def write_root_template(class_name, template_path) do
-    shell_path = Path.join(template_path, "layout/" <> class_name <> ".html.heex")
+    shell_path = Path.join(template_path, class_name <> ".html.heex")
 
     File.write(
       shell_path,
