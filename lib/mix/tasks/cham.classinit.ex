@@ -25,6 +25,7 @@ defmodule Mix.Tasks.Cham.Classinit do
 
     with :ok <- File.mkdir_p(Path.dirname(class_path)),
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
+      IO.puts("Folders created")
       # write contents
       write_readme(class_name, class_path)
       write_router(class_name, class_path)
