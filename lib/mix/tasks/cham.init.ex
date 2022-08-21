@@ -26,20 +26,20 @@ defmodule Mix.Tasks.Cham.Init do
   end
 
   def write_router(otp_app) do
-    app_dir = File.cwd!()
     router_path = Mix.Cham.web_path(otp_app, "router.ex")
+    web_name = Mix.Cham.web_name(otp_app)
 
     File.write(
       router_path,
       """
-      defmodule ChameleonicWeb.Router do
-        use ChameleonicWeb, :router
+      defmodule #{web_name}.Router do
+        use #{web_name}, :router
 
         pipeline :browser do
           plug :accepts, ["html"]
           plug :fetch_session
           plug :fetch_live_flash
-          plug :put_root_layout, {ChameleonicWeb.LayoutView, :root}
+          plug :put_root_layout, {#{web_name}.LayoutView, :root}
           plug :protect_from_forgery
           plug :put_secure_browser_headers
         end
@@ -48,7 +48,7 @@ defmodule Mix.Tasks.Cham.Init do
           plug :accepts, ["json"]
         end
 
-        scope "/", ChameleonicWeb do
+        scope "/", #{web_name} do
           pipe_through :browser
 
           # actual public routes, using the public controller
@@ -56,13 +56,15 @@ defmodule Mix.Tasks.Cham.Init do
           get "/login", PublicController, :fakelogin
           get "/logout", PublicController, :logout
 
-          # Send the classes to their own routes, so we can just hite the /prefixes/
-          forward "/employee", ParticipantRouter
+          # Admin class
           forward "/admin", AdminRouter
+
+          # Once you generate a new class you can enable it here
+          # forward "/employee", ParticipantRouter
         end
 
         # Other scopes may use custom stacks.
-        # scope "/api", ChameleonicWeb do
+        # scope "/api", #{web_name} do
         #   pipe_through :api
         # end
 
@@ -79,7 +81,7 @@ defmodule Mix.Tasks.Cham.Init do
           scope "/" do
             pipe_through :browser
 
-            live_dashboard "/dashboard", metrics: ChameleonicWeb.Telemetry
+            live_dashboard "/dashboard", metrics: #{web_name}.Telemetry
           end
         end
 
