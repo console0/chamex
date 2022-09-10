@@ -30,7 +30,7 @@ defmodule Mix.Tasks.Cham.Init do
     # lib/*_web/controllers/page_controller.ex
 
     with :ok <- File.mkdir_p(class_path),
-         :ok <- File.mkdir_p(layout_path)
+         :ok <- File.mkdir_p(layout_path),
          :ok <- File.mkdir_p(template_path) do
       # write contents
       write_readme(class_path)
