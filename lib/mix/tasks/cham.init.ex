@@ -19,8 +19,8 @@ defmodule Mix.Tasks.Cham.Init do
     Mix.Tasks.Cham.Classinit.generate_class("admin")
 
     # create public structure and initial page
-    class_path = Mix.Cham.web_path(otp_app, "controllers/public")
-    template_path = Mix.Cham.web_path(otp_app, "templates/public")
+    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers","public"]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
 
     # TODO readme for templates root dir
 
