@@ -33,7 +33,26 @@ defmodule Mix.Tasks.Cham.Classinit do
       write_router(class_name, class_path)
       write_root_template(class_name, layout_path)
       write_index(class_name)
+      write_view(class_name)
     end
+  end
+
+  def write_view(class_name) do
+    otp_app = Mix.Cham.otp_app()
+    web_name = Mix.Cham.web_name(otp_app)
+    view_path = Mix.Cham.web_path(otp_app, "views/" <> class_name <> "_view.ex")
+    capital_class = Mix.Cham.camelize(class_name)
+
+    File.write(
+      view_path,
+      """
+      defmodule #{web_name}.#{capital_class}View do
+        use #{web_name}, :view
+      end
+      """,
+      [:write]
+    )
+
   end
 
   def write_readme(class_name, class_path) do
