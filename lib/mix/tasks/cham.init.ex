@@ -75,8 +75,8 @@ defmodule Mix.Tasks.Cham.Init do
     plug_path = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs"]))
     plug_file = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs", "require_class.ex"]))
 
-    IO.Inspect plug_path
-    IO.Inspect plug_file
+    IO.inspect plug_path
+    IO.inspect plug_file
 
     with :ok <- File.mkdir_p(Path.dirname(plug_path)) do
       File.write(
