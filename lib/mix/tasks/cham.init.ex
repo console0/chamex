@@ -126,9 +126,7 @@ defmodule Mix.Tasks.Cham.Init do
           pipe_through :browser
 
           # actual public routes, using the public controller
-          get "/", PublicController, :index
-          get "/login", PublicController, :fakelogin
-          get "/logout", PublicController, :logout
+          get "/", PublicIndexController, :index
 
           # Admin class
           forward "/admin", AdminRouter
