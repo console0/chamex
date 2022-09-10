@@ -20,9 +20,9 @@ defmodule Mix.Tasks.Cham.Init do
     Mix.Tasks.Cham.Classinit.generate_class("admin")
 
     # create public structure and initial page
-    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers","public"]))
+    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers", "public"]))
     layout_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
-    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates","public"]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "public"]))
 
     # remove some of the default files we wont need anymore
     with {:ok, _stat} <- File.stat("lib/" <> app_name <> "/controllers/page_controller.ex") do

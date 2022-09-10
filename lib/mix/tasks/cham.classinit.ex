@@ -20,14 +20,13 @@ defmodule Mix.Tasks.Cham.Classinit do
     class_name = Mix.Cham.to_lower_char(raw_class_name)
 
     # gen folder web/controllers/class
-    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers",class_name]))
+    class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers", class_name]))
     layout_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
-    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates",class_name]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", class_name]))
 
     with :ok <- File.mkdir_p(class_path),
          :ok <- File.mkdir_p(layout_path),
          :ok <- File.mkdir_p(template_path) do
-
       # write contents
       write_readme(class_name, class_path)
       write_router(class_name, class_path)
@@ -52,7 +51,6 @@ defmodule Mix.Tasks.Cham.Classinit do
       """,
       [:write]
     )
-
   end
 
   def write_readme(class_name, class_path) do
