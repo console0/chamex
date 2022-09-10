@@ -21,15 +21,17 @@ defmodule Mix.Tasks.Cham.Classinit do
 
     # gen folder web/controllers/class
     class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers",class_name]))
-    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
+    layout_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates",class_name]))
 
     with :ok <- File.mkdir_p(class_path),
+         :ok <- File.mkdir_p(layout_path),
          :ok <- File.mkdir_p(template_path) do
 
       # write contents
       write_readme(class_name, class_path)
       write_router(class_name, class_path)
-      write_root_template(class_name, template_path)
+      write_root_template(class_name, layout_path)
       write_index(class_name)
     end
   end
