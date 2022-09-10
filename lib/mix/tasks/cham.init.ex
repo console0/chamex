@@ -5,6 +5,7 @@ defmodule Mix.Tasks.Cham.Init do
   @shortdoc "Setup the folder structure and make an initial public/admin class."
   def run(_args) do
     otp_app = Mix.Cham.otp_app()
+    app_name = to_string(otp_app) <> "_web"
 
     # create makefile and docker files
     write_makefile(otp_app)
@@ -23,11 +24,11 @@ defmodule Mix.Tasks.Cham.Init do
     layout_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
     template_path = Mix.Cham.web_path(otp_app, Path.join(["templates","public"]))
 
-    # TODO readme for templates root dir
+    # remove some of the default files we wont need anymore
+    with :ok <- File.stat("lib/" <> app_name <> "/controllers/page_controller.ex") do
+      File.rm("lib/" <> app_name <> "/controllers/page_controller.ex")
+    end
 
-    # update the routers to have the above
-    # TODO nuke the junk that comes with the site so we can override
-    # lib/*_web/controllers/page_controller.ex
 
     with :ok <- File.mkdir_p(class_path),
          :ok <- File.mkdir_p(layout_path),
@@ -38,8 +39,37 @@ defmodule Mix.Tasks.Cham.Init do
       Mix.Tasks.Cham.Classinit.write_root_template("public", template_path)
       Mix.Tasks.Cham.Classinit.write_index("public")
       Mix.Tasks.Cham.Classinit.write_view("public")
+      write_public_readme(class_path)
       # TODO gen auth should be handled correctly, we don't want to do that ourselves
     end
+  end
+
+  def write_public_readme(class_path) do
+    readme_path = Path.join(class_path, "README.md")
+    this_app = Mix.Cham.otp_app()
+    app_name = to_string(this_app) <> "_web"
+
+    File.write(
+      readme_path,
+      """
+      ### Class: `public`
+
+      All non-authenticated browser requests come to this class.
+
+      Routes are defined in `lib/router.ex`,
+
+      Pages should be added by calling `mix cham.pageinit --class public pagename`
+
+      Templates for the pages in this class are located in:
+
+      `lib/#{app_name}/templates/#{class_name}`
+
+      The outer shell layout is defined in:
+
+      `lib/#{app_name}/templates/layout/#{class_name}.html.heex`
+      """,
+      [:write]
+    )
   end
 
   def write_readme(class_path) do
