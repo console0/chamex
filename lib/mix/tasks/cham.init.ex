@@ -72,8 +72,8 @@ defmodule Mix.Tasks.Cham.Init do
     this_app = Mix.Cham.otp_app()
     app_name = to_string(this_app) <> "_web"
     web_name = Mix.Cham.web_name(otp_app)
-    plug_path = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs"]))
-    plug_file = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs", "require_class.ex"]))
+    plug_path = Mix.Cham.web_path(otp_app, Path.join(["plugs"]))
+    plug_file = Mix.Cham.web_path(otp_app, Path.join(["plugs", "require_class.ex"]))
 
     IO.inspect plug_path
     IO.inspect plug_file
