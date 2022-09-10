@@ -363,11 +363,16 @@ defmodule Mix.Tasks.Cham.Init do
       build: ## (Re)build the containers
       \tdocker-compose build
 
+      remove-containers: ## Pull a DB backup and remove the containers
+      \tdocker-compose up -d
+      \tpg_dump $(dbname) -h localhost -U postgres -w -O -f $(dbname).backupsql
+      \tdocker-compose rm -s -v
+
       start-db: ## Start the postgres node
       \tdocker-compose up -d db
 
       stop-db: ## Stop the postgres node
-      \tdocker-compose stop
+      \tdocker-compose stop db
 
       db-migrate: ## Run migrations
       \tdocker-compose up -d db
