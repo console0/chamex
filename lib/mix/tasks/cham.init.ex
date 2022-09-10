@@ -70,15 +70,11 @@ defmodule Mix.Tasks.Cham.Init do
 
   def write_class_plug(otp_app) do
     this_app = Mix.Cham.otp_app()
-    app_name = to_string(this_app) <> "_web"
     web_name = Mix.Cham.web_name(otp_app)
     plug_path = Mix.Cham.web_path(otp_app, Path.join(["plugs"]))
     plug_file = Mix.Cham.web_path(otp_app, Path.join(["plugs", "require_class.ex"]))
 
-    IO.inspect plug_path
-    IO.inspect plug_file
-
-    with :ok <- File.mkdir!(Path.dirname(plug_path)) do
+    with :ok <- File.mkdir_p(plug_path) do
       IO.inspect "about to write"
       File.write(
         plug_file,
