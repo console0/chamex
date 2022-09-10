@@ -40,12 +40,6 @@ Then run
 mix deps.get
 ```
 
-As development is taking place, it makes sense to occasionally run:
-
-```
-mix deps.update chamex
-```
-
 Since the app will be running in a container, do the following minor changes to `dev.exs` and `test.exs`:
 
 In the db config section:
