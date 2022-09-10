@@ -35,7 +35,7 @@ defmodule Mix.Tasks.Cham.Init do
       # write contents
       write_readme(class_path)
       write_class_plug(otp_app)
-      Mix.Tasks.Cham.Classinit.write_root_template("public", template_path)
+      Mix.Tasks.Cham.Classinit.write_root_template("public", layout_path)
       Mix.Tasks.Cham.Classinit.write_index("public")
       Mix.Tasks.Cham.Classinit.write_view("public")
       write_public_readme(class_path)
