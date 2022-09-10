@@ -29,7 +29,7 @@ Add this module to `mix.exs`.  Currently its only on git, so install via:
 ```elixir
 def deps do
   [
-    {:chamex, git: "https://github.com/console0/chamex", branch: "main"}`}
+    {:chamex, git: "https://github.com/console0/chamex", branch: "main"}
   ]
 end
 ```
@@ -80,11 +80,9 @@ This will build an app image for the web server and for the database.  You can s
 ```
 make web-server
 ```
-
 The site should now be accessible at `https://sitename.ex.test/`
 
-Man other commands are added tot he Makefile for dumping the DB, running tests, getting a docker shell prompt, etc.  They can be
-listed via:
+Many other commands are added to the Makefile for dumping the DB, running tests, getting a docker shell prompt, etc.  They can be listed via:
 
 ```
 make help
