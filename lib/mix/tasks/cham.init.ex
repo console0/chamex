@@ -79,6 +79,7 @@ defmodule Mix.Tasks.Cham.Init do
     IO.inspect plug_file
 
     with :ok <- File.mkdir_p(Path.dirname(plug_path)) do
+      IO.inspect "about to write"
       File.write(
         plug_file,
         """
