@@ -25,7 +25,7 @@ defmodule Mix.Tasks.Cham.Init do
     template_path = Mix.Cham.web_path(otp_app, Path.join(["templates","public"]))
 
     # remove some of the default files we wont need anymore
-    with :ok <- File.stat("lib/" <> app_name <> "/controllers/page_controller.ex") do
+    with {:ok, _stat} <- File.stat("lib/" <> app_name <> "/controllers/page_controller.ex") do
       File.rm("lib/" <> app_name <> "/controllers/page_controller.ex")
     end
 
