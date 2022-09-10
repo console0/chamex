@@ -29,7 +29,6 @@ defmodule Mix.Tasks.Cham.Init do
       File.rm("lib/" <> app_name <> "/controllers/page_controller.ex")
     end
 
-
     with :ok <- File.mkdir_p(class_path),
          :ok <- File.mkdir_p(layout_path),
          :ok <- File.mkdir_p(template_path) do
@@ -62,11 +61,11 @@ defmodule Mix.Tasks.Cham.Init do
 
       Templates for the pages in this class are located in:
 
-      `lib/#{app_name}/templates/#{class_name}`
+      `lib/#{app_name}/templates/public`
 
       The outer shell layout is defined in:
 
-      `lib/#{app_name}/templates/layout/#{class_name}.html.heex`
+      `lib/#{app_name}/templates/layout/public.html.heex`
       """,
       [:write]
     )
