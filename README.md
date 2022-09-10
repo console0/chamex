@@ -47,7 +47,7 @@ In the db config section:
 ```
   password: System.get_env("DB_PASS", "postgres"),
   hostname: System.get_env("DB_HOST", "localhost"),
-  database: "test1",
+  database: "sitename",
 ```
 
 Where ports are configured
