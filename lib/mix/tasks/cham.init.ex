@@ -86,11 +86,16 @@ defmodule Mix.Tasks.Cham.Init do
 
           def init(classes), do: classes
 
-          def call(conn, classes) do
+          # public (default/missing) class just sets the view
+          def call(conn, _args=[]) do
+            conn |> put_view(#{web_name}.PublicView)
+          end
+
+          def call(conn, classes, view) do
             session_class = get_session(conn, :class)
 
             case Enum.member?(classes, session_class) do
-            # true -> conn |> put_view(THEVIEWCLASS)
+              true -> conn |> put_view(view)
               _ -> conn |> put_flash(:info, "You must be logged in") |> redirect(to: "/") |> halt()
             end
           end
@@ -118,6 +123,7 @@ defmodule Mix.Tasks.Cham.Init do
           plug :put_root_layout, {#{web_name}.LayoutView, :root}
           plug :protect_from_forgery
           plug :put_secure_browser_headers
+          plug #{web_name}.Plugs.RequireClass
         end
 
         pipeline :api do
