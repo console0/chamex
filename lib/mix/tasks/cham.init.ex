@@ -16,7 +16,6 @@ defmodule Mix.Tasks.Cham.Init do
     write_router(otp_app)
 
     # create an admin class
-    Mix.Tasks.Cham.Classinit.generate_class("public")
     Mix.Tasks.Cham.Classinit.generate_class("admin")
 
     # create public structure and initial page
@@ -27,6 +26,7 @@ defmodule Mix.Tasks.Cham.Init do
 
     # update the routers to have the above
     # TODO nuke the junk that comes with the site so we can override
+    # lib/*_web/controllers/page_controller.ex
 
     with :ok <- File.mkdir_p(Path.dirname(class_path)),
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
@@ -34,8 +34,8 @@ defmodule Mix.Tasks.Cham.Init do
       write_readme(class_path)
       write_class_plug(otp_app)
       Mix.Tasks.Cham.Classinit.write_root_template("public", template_path)
+      Mix.Tasks.Cham.Classinit.write_index("public")
       # TODO gen auth should be handled correctly, we don't want to do that ourselves
-      # gen index page here!
     end
   end
 
@@ -74,6 +74,9 @@ defmodule Mix.Tasks.Cham.Init do
     web_name = Mix.Cham.web_name(otp_app)
     plug_path = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs"]))
     plug_file = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs", "require_class.ex"]))
+
+    IO.Inspect plug_path
+    IO.Inspect plug_file
 
     with :ok <- File.mkdir_p(Path.dirname(plug_path)) do
       File.write(
