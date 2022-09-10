@@ -16,6 +16,7 @@ defmodule Mix.Tasks.Cham.Init do
     write_router(otp_app)
 
     # create an admin class
+    Mix.Tasks.Cham.Classinit.generate_class("public")
     Mix.Tasks.Cham.Classinit.generate_class("admin")
 
     # create public structure and initial page
