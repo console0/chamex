@@ -122,6 +122,8 @@ defmodule Mix.Tasks.Cham.Classinit do
   def write_root_template(class_name, template_path) do
     shell_path = Path.join(template_path, class_name <> ".html.heex")
 
+    IO.inspect(shell_path)
+
     File.write(
       shell_path,
       """
