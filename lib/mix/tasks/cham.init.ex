@@ -24,30 +24,6 @@ defmodule Mix.Tasks.Cham.Init do
 
     # TODO readme for templates root dir
 
-    # TODO updates for a single view control
-
-    # TODO see if a plug can do put_view
-
-    # Add RequireClass to current code and make sure it can be used.
-    # or dump
-    """
-    defmodule YOU.Plugs.ChamexClass do
-      import Plug.Conn
-
-      use ChameleonicWeb, :controller
-
-      def init(classes), do: classes
-
-      def call(conn, classes) do
-        session_class = get_session(conn, :class)
-
-        case Enum.member?(classes, session_class) do
-          true -> conn |> put_view(THEVIEWCLASS)
-          _ -> conn |> put_flash(:info, "You must be logged in") |> redirect(to: "/") |> halt()
-        end
-      end
-    end
-    """
     # update the routers to have the above
     # TODO nuke the junk that comes with the site so we can override
 
@@ -55,6 +31,7 @@ defmodule Mix.Tasks.Cham.Init do
          :ok <- File.mkdir_p(Path.dirname(template_path)) do
       # write contents
       write_readme(class_path)
+      write_class_plug(otp_app)
       Mix.Tasks.Cham.Classinit.write_root_template("public", template_path)
       # TODO gen auth should be handled correctly, we don't want to do that ourselves
       # gen index page here!
@@ -88,6 +65,39 @@ defmodule Mix.Tasks.Cham.Init do
       """,
       [:write]
     )
+  end
+
+  def write_class_plug(otp_app) do
+    this_app = Mix.Cham.otp_app()
+    app_name = to_string(this_app) <> "_web"
+    web_name = Mix.Cham.web_name(otp_app)
+    plug_path = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs"]))
+    plug_file = Mix.Cham.web_path(otp_app, Path.join(["lib", app_name, "plugs", "require_class.ex"]))
+
+    with :ok <- File.mkdir_p(Path.dirname(plug_path)) do
+      File.write(
+        plug_file,
+        """
+        defmodule #{web_name}.Plugs.RequireClass do
+          import Plug.Conn
+
+          use #{web_name}, :controller
+
+          def init(classes), do: classes
+
+          def call(conn, classes) do
+            session_class = get_session(conn, :class)
+
+            case Enum.member?(classes, session_class) do
+            # true -> conn |> put_view(THEVIEWCLASS)
+              _ -> conn |> put_flash(:info, "You must be logged in") |> redirect(to: "/") |> halt()
+            end
+          end
+        end
+        """,
+        [:write]
+      )
+    end
   end
 
   def write_router(otp_app) do
