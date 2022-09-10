@@ -20,7 +20,8 @@ defmodule Mix.Tasks.Cham.Init do
 
     # create public structure and initial page
     class_path = Mix.Cham.web_path(otp_app, Path.join(["controllers","public"]))
-    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
+    layout_path = Mix.Cham.web_path(otp_app, Path.join(["templates", "layout"]))
+    template_path = Mix.Cham.web_path(otp_app, Path.join(["templates","public"]))
 
     # TODO readme for templates root dir
 
@@ -28,8 +29,9 @@ defmodule Mix.Tasks.Cham.Init do
     # TODO nuke the junk that comes with the site so we can override
     # lib/*_web/controllers/page_controller.ex
 
-    with :ok <- File.mkdir_p(Path.dirname(class_path)),
-         :ok <- File.mkdir_p(Path.dirname(template_path)) do
+    with :ok <- File.mkdir_p(class_path),
+         :ok <- File.mkdir_p(layout_path)
+         :ok <- File.mkdir_p(template_path) do
       # write contents
       write_readme(class_path)
       write_class_plug(otp_app)
